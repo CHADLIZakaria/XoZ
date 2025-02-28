@@ -1,0 +1,28 @@
+.game {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .game-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        min-height: 50vh;
+        .btn-game {
+          border: none;
+          background-color: transparent;
+          cursor: pointer;
+          border-right: 1px solid;
+          border-bottom: 1px solid;
+          font-weight: bold;
+          font-size: 2rem;
+          &:nth-child(7),
+          &:nth-child(8),
+          &:nth-child(9) {
+            border-bottom: 0;
+          }
+          &:nth-child(3n) {
+            border-right: none;
+          }
+        }
+    }
+}

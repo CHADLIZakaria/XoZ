@@ -1,0 +1,7 @@
+<div class="game">
+    <div class="game-grid">
+      @for (position of gridArray; track position) {
+        <button class="btn-game" (click)="addMove(position)">{{ moves[position] || "" }}</button>
+      }
+    </div>
+</div>
