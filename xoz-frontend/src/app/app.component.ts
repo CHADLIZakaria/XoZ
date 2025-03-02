@@ -1,9 +1,6 @@
 import { RouterOutlet } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { JsonPipe } from '@angular/common';
-import { HomeComponent } from "./features/home/components/home/home.component";
+import { Component } from '@angular/core';
 import { NavbarComponent } from './shared/navbar/navbar.component';
-
 
 @Component({
   selector: 'app-root',
@@ -14,5 +11,5 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 })
 export class AppComponent {
   title = 'xo-frontend';
-  
+
 }

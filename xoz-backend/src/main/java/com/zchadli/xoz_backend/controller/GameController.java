@@ -1,5 +1,6 @@
 package com.zchadli.xoz_backend.controller;
 
+import com.zchadli.xoz_backend.dto.GameDto;
 import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.service.GameService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameController {
     private final GameService gameService;
     @PostMapping
-    public void save(@RequestBody Game game) {
-        gameService.saveGame(game);
+    public GameDto save(@RequestBody Game game) {
+        return gameService.saveGame(game);
     }
 }

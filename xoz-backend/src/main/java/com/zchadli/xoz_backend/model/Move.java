@@ -22,4 +22,12 @@ public class Move {
     @ManyToOne
     @JoinColumn(name="id_player")
     private Player player;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Move move = (Move) obj;
+        return id != null && id.equals(move.getId());
+    }
+
 }

@@ -17,10 +17,24 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(mappedBy = "games")
+    @ManyToMany
+    @JoinTable(
+        name="player_games",
+        joinColumns = @JoinColumn(name="game_id"),
+        inverseJoinColumns = @JoinColumn(name="player_id")
+    )
+    @ToString.Exclude
     private Set<Player> players = new HashSet<>();
     @OneToMany(mappedBy = "game")
+    @ToString.Exclude
     private Set<Move> moves = new HashSet<>();
-    private Boolean isFinished;
-
+    @Column(columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean isFinished;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Game game = (Game) obj;
+        return id != null && id.equals(game.getId());
+    }
 }

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/player")
 @RequiredArgsConstructor
 public class PlayerController {
-
     private final PlayerService playerService;
     @PostMapping
     public void save(@RequestBody Player player) {

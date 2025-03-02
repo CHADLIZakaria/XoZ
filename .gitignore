@@ -1,0 +1,25 @@
+# Root directory .gitignore
+.xoz-frontend/
+.xoz-backend/
+
+# Ignore node_modules directories from both frontend and backend
+/xoz-frontend/node_modules/
+/xoz-frontend/.angular/
+
+
+# Ignore build directories for both frontend and backend
+/xoz-frontend/dist/
+/xoz-frontend/build/
+/xoz-backend/target/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IntelliJ or other IDE configuration files
+.idea/
+.vscode/
+
+# Other system-generated files
+*.log
+*.swp

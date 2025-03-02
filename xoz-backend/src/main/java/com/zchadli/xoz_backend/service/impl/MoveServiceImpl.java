@@ -1,6 +1,8 @@
 package com.zchadli.xoz_backend.service.impl;
 
 import com.zchadli.xoz_backend.dao.MoveDao;
+import com.zchadli.xoz_backend.dto.MoveDto;
+import com.zchadli.xoz_backend.mapper.XoZMapper;
 import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Move;
 import com.zchadli.xoz_backend.service.MoveService;
@@ -15,16 +17,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MoveServiceImpl implements MoveService  {
     private final MoveDao moveDao;
+    private final XoZMapper xoZMapper;
     @Override
-    public void saveMove(Move move) {
+    public Boolean saveMove(MoveDto moveDto) {
+        Move move = xoZMapper.toMove(moveDto);
         Game game = move.getGame();
-        if(!game.getIsFinished()) {
-            game.getMoves().add(move);
-            List<Move> movesPlayer = game.getMoves().stream().filter(element -> element.getPlayer()==move.getPlayer()).toList();
-            game.setIsFinished(isRowWin(movesPlayer) || isColumnWin(movesPlayer) || isDiagonalWin(movesPlayer));
+        if(!game.isFinished()) {
             moveDao.save(move);
+            List<Move> test = moveDao.findByGameIdAndPlayerId(move.getGame().getId(), move.getPlayer().getId());
+            List<Move> movesPlayer = moveDao.findByGameIdAndPlayerId(move.getGame().getId(), move.getPlayer().getId());
+            return isRowWin(movesPlayer) || isColumnWin(movesPlayer) || isDiagonalWin(movesPlayer);
         }
+        return null;
     }
+
+    @Override
+    public List<Move> findByIdGameAndIdPlayer(Long idGame, Long idPlayer) {
+        return null;
+    }
+
+
     private boolean isRowWin(List<Move> movePlayer) {
         return movePlayer.stream().collect(Collectors.groupingBy(Move::getX, Collectors.counting())).values().stream().anyMatch(count -> count == 3);
     }

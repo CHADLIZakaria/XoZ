@@ -1,6 +1,6 @@
 package com.zchadli.xoz_backend.controller;
 
-import com.zchadli.xoz_backend.model.Move;
+import com.zchadli.xoz_backend.dto.MoveDto;
 import com.zchadli.xoz_backend.service.MoveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/move")
 @RequiredArgsConstructor
 public class MoveController {
-    private MoveService moveService;
+    private final MoveService moveService;
     @PostMapping
-    public void save(@RequestBody Move move) {
-        moveService.saveMove(move);
+    public Boolean save(@RequestBody MoveDto move) {
+        return moveService.saveMove(move);
     }
 }

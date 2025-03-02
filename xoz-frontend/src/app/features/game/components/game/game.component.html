@@ -1,7 +1,14 @@
 <div class="game">
-    <div class="game-grid">
-      @for (position of gridArray; track position) {
-        <button class="btn-game" (click)="addMove(position)">{{ moves[position] || "" }}</button>
-      }
-    </div>
+  <div class="game-grid w-50 m-auto bg-white py-5 px-3 rounded-2">
+    @for (position of gridArray; track position) {
+      <button class="btn-game" (click)="addMove(position)">
+        @if(moves[position]) {
+          <img [src]="'assets/images/'+moves[position]+'.png'" />
+        }
+        @else {
+          <span></span>
+        } 
+      </button>
+    }
+  </div>
 </div>
