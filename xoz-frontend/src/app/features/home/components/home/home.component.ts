@@ -20,8 +20,7 @@ export class HomeComponent {
   handleClick() {
     this.homeService.save().subscribe(
       (data) => { 
-        console.log(data.id.toString())       
-        this.router.navigate(['/game'], {queryParams: {id: data.id.toString()}})
+        this.router.navigate([`/party/${data.uid}`])
       }
     );
   }

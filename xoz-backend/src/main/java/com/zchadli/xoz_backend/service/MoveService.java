@@ -1,11 +1,13 @@
 package com.zchadli.xoz_backend.service;
 
+import com.zchadli.xoz_backend.dto.GameResultDto;
 import com.zchadli.xoz_backend.dto.MoveDto;
 import com.zchadli.xoz_backend.model.Move;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MoveService {
-    Boolean saveMove(MoveDto move);
-    List<Move> findByIdGameAndIdPlayer(Long idGame, Long idPlayer);
+    GameResultDto saveMove(MoveDto move);
+    GameResultDto getGameResult(Set<Move> movesPlayer);
 }

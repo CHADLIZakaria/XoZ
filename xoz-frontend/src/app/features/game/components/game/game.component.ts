@@ -1,31 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { GameService } from '../../services/game.service';
-import { Move } from 'src/app/models/game';
 import { HttpClientModule } from '@angular/common/http';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Game, Move } from 'src/app/models/game';
+import { PopupComponent } from 'src/app/shared/popup/popup.component';
+import { ButtonComponent } from "../../../../shared/button/button.component";
+import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [HttpClientModule],
+  imports: [HttpClientModule, ButtonComponent, PopupComponent],
   providers: [GameService],
   templateUrl: './game.component.html',
   styleUrl: './game.component.less'
 })
 export class GameComponent implements OnInit {
-  idGame!:number;
+  uidParty!: string;
+  currentGame!: Game;
   gridArray: string[] = []
-  moves: {[key: string]: string} = {}
+  moves: {[key: string]: number} = {}
   currentPlayer="p1";
+  movesWin: Move[] = [];
+  showModal = signal(false);
 
   constructor(private gameService: GameService, private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(param => {
-      this.idGame = param['id']    
-      this.gridArray = this.getData()
+    this.route.paramMap.subscribe(params => {
+      this.uidParty = params.get('uid')!
+      this.gameService.getParty(this.uidParty).subscribe(
+        (data) => {
+          this.currentGame = data.currentGame
+          this.moves = data.currentGame.moves.reduce((acc, element) => {
+            acc[element.position] = element.id_player;
+            return acc;
+          }, {} as Record<string, number>);
+          if(this.currentGame.finished) {
+            this.toggleModal()
+          }
+
+        }
+      )
     })
+    this.gridArray = this.getData()
+  }
+
+  isMoveWin(position: string) {
+    return this.movesWin.map(moveWin => moveWin.position).includes(position);
   }
 
   getData(): string[] {
@@ -43,20 +65,28 @@ export class GameComponent implements OnInit {
     let move: Move = {
       id: undefined,
       position: position,
-      id_game: +this.idGame!,
+      id_game: this.currentGame.id,
       id_player: this.currentPlayer=="p1" ? 1 : 2    
     }
-    console.log(move)
-    this.gameService.addMove(move).subscribe();
-    if(this.currentPlayer==="p1") {
-      this.moves[position]="x"
-      this.currentPlayer = "p2"
-    }
-    else {
-      this.moves[position]="o"
-      this.currentPlayer = "p1"
-    }
-    console.log(this.moves)
+    this.gameService.addMove(move).subscribe(data => {
+      if(this.currentPlayer==="p1") {
+        this.moves[position]=2
+        this.currentPlayer = "p2"
+      }
+      else {
+        this.moves[position]=1
+        this.currentPlayer = "p1"
+      }
+      if(data.isFinished) {
+        this.movesWin = data.moves;
+        this.toggleModal()
+      }
+    });
+   
+  }
+
+  toggleModal() {
+    this.showModal.update((visible) => !visible);
   }
 
 }

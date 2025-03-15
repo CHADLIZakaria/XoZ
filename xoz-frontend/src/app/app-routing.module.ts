@@ -4,5 +4,5 @@ import { HomeComponent } from './features/home/components/home/home.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'game', component: GameComponent }
+  { path: 'party/:uid', component: GameComponent }
 ];

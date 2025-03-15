@@ -5,4 +5,5 @@ import com.zchadli.xoz_backend.model.Game;
 
 public interface GameService {
     GameDto saveGame(Game game);
+    GameDto getGame(Long id);
 }

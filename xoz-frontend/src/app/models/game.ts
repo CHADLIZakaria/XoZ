@@ -1,9 +1,26 @@
+export interface Player {
+    id:  number;
+    name: string;
+}
 export interface Game {
     id: number;
+    players: Player[];
+    finished: boolean;
+    current: boolean;
+    moves: Move[]
 }
 export interface Move {
     id: number | undefined;
     position: string;
     id_game: number;
     id_player: number;
+}
+export interface GameResult {
+    moves: Move[];
+    isFinished: boolean;
+}
+export interface Party {
+    id: number | undefined;
+    uid: string;
+    currentGame: Game;
 }

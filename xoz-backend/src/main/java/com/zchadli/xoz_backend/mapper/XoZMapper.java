@@ -1,9 +1,9 @@
 package com.zchadli.xoz_backend.mapper;
 
-import com.zchadli.xoz_backend.dto.GameDto;
-import com.zchadli.xoz_backend.dto.MoveDto;
+import com.zchadli.xoz_backend.dto.*;
 import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Move;
+import com.zchadli.xoz_backend.model.Party;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -16,17 +16,22 @@ public interface XoZMapper {
     XoZMapper xoZMapper = Mappers.getMapper(XoZMapper.class);
 
     GameDto toGameDto(Game game);
+    Game toGame(GameDto gameDto);
 
     @Mapping(source = "position", target = "x", qualifiedByName = "getXPosition")
     @Mapping(source = "position", target = "y", qualifiedByName = "getYPosition")
     @Mapping(source = "id_game", target = "game.id")
     @Mapping(source = "id_player", target = "player.id")
     Move toMove(MoveDto moveDto);
-
     @Mapping(expression = "java(move.getX() + \",\"+move.getY())", target = "position")
     @Mapping(source = "game.id", target = "id_game")
     @Mapping(source =  "player.id", target = "id_player")
     MoveDto toMoveDto(Move move);
+
+
+    @Mapping(source = "party.id", target = "id")
+    @Mapping(source = "gameResult", target = "currentGame.gameResult")
+    PartyDto toPartyDto(Party party, GameDto currentGame, GameResultDto gameResult);
 
     default Integer[] splitPositions(String position) {
         if (position != null && !position.isEmpty()) {

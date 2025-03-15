@@ -1,0 +1,23 @@
+@if(isOpen()) {
+    <div class="position-absolute w-100 h-100 top-0" @modalClose>
+        <div class="modal-overlay position-absolute bg-secondary w-100 h-100 top-0 bg-opacity-75"></div>
+        <div class="w-50 bg-white position-absolute top-50 start-50 translate-middle popup-container d-flex flex-row align-items-center px-2 py-3 text-center modal-content" >
+            <img src="/assets/images/trophee.png" class="rounded mx-auto d-block" alt="trophee" />
+            <div class="d-flex flex-column flex-grow-1 flex-shrink-0 flex-basis-0 gap-3 justify-content-center align-items-center">
+                <span class="fs-3">We Have A Winner</span>
+                <span class="fs-3 fw-bold mb-3">Player 2</span>
+                <app-button
+                    text="Restart"
+                    icon="/assets/images/restart.png"
+                    classButton="game-action">
+                </app-button>                                
+            </div>
+            <app-button
+                [text]="''"
+                [icon]="'/assets/images/close.png'"
+                classButton="icon-button"
+                (onClick)="onClose()">
+            </app-button>  
+        </div>
+    </div>
+}

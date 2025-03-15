@@ -20,8 +20,8 @@ public class Game {
     @ManyToMany
     @JoinTable(
         name="player_games",
-        joinColumns = @JoinColumn(name="game_id"),
-        inverseJoinColumns = @JoinColumn(name="player_id")
+        joinColumns = @JoinColumn(name="id_game"),
+        inverseJoinColumns = @JoinColumn(name="id_player")
     )
     @ToString.Exclude
     private Set<Player> players = new HashSet<>();
@@ -30,6 +30,11 @@ public class Game {
     private Set<Move> moves = new HashSet<>();
     @Column(columnDefinition = "BOOLEAN DEFAULT false")
     private boolean isFinished;
+    @Column(columnDefinition = "BOOLEAN DEFAULT true")
+    private boolean isCurrent;
+    @ManyToOne
+    @JoinColumn(name="id_party")
+    private Party party;
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

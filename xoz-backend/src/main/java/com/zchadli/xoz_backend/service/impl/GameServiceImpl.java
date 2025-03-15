@@ -27,4 +27,9 @@ public class GameServiceImpl implements GameService {
         return xoZMapper.toGameDto(gameSaved);
     }
 
+    @Override
+    public GameDto getGame(Long id) {
+        return xoZMapper.toGameDto(gameDao.findById(id).orElseThrow());
+    }
+
 }
