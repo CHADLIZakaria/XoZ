@@ -28,10 +28,13 @@ public interface XoZMapper {
     @Mapping(source =  "player.id", target = "id_player")
     MoveDto toMoveDto(Move move);
 
-
     @Mapping(source = "party.id", target = "id")
-    @Mapping(source = "gameResult", target = "currentGame.gameResult")
+    @Mapping(target = "currentGame", expression = "java(toCurrentGameDto(currentGame, gameResult))") // Call method explicitly
     PartyDto toPartyDto(Party party, GameDto currentGame, GameResultDto gameResult);
+
+    default CurrentGameDto toCurrentGameDto(GameDto gameDto, GameResultDto gameResult) {
+        return (gameDto != null && gameResult != null) ? new CurrentGameDto(gameDto, gameResult) : null;
+    }
 
     default Integer[] splitPositions(String position) {
         if (position != null && !position.isEmpty()) {

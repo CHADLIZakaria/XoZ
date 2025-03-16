@@ -5,7 +5,6 @@ import com.zchadli.xoz_backend.dto.GameDto;
 import com.zchadli.xoz_backend.dto.GameResultDto;
 import com.zchadli.xoz_backend.dto.MoveDto;
 import com.zchadli.xoz_backend.mapper.XoZMapper;
-import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Move;
 import com.zchadli.xoz_backend.service.GameService;
 import com.zchadli.xoz_backend.service.MoveService;
@@ -38,11 +37,11 @@ public class MoveServiceImpl implements MoveService  {
     @Override
     public GameResultDto getGameResult(Set<Move> movesPlayer) {
         GameResultDto gameResultDto = rowWin(movesPlayer);
-        if(gameResultDto.isFinished()) {
+        if(gameResultDto.finished()) {
             return gameResultDto;
         }
         gameResultDto = columnWin(movesPlayer);
-        if(gameResultDto.isFinished()) {
+        if(gameResultDto.finished()) {
             return gameResultDto;
         }
         gameResultDto = diagonalWin(movesPlayer);

@@ -19,8 +19,12 @@ export interface GameResult {
     moves: Move[];
     isFinished: boolean;
 }
+export interface CurrentGame {
+    game: Game;
+    gameResult: GameResult;
+}
 export interface Party {
     id: number | undefined;
     uid: string;
-    currentGame: Game;
+    currentGame: CurrentGame;
 }

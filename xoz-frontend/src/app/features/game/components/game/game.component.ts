@@ -31,8 +31,8 @@ export class GameComponent implements OnInit {
       this.uidParty = params.get('uid')!
       this.gameService.getParty(this.uidParty).subscribe(
         (data) => {
-          this.currentGame = data.currentGame
-          this.moves = data.currentGame.moves.reduce((acc, element) => {
+          this.currentGame = data.currentGame.game
+          this.moves = data.currentGame.game.moves.reduce((acc, element) => {
             acc[element.position] = element.id_player;
             return acc;
           }, {} as Record<string, number>);
@@ -70,11 +70,11 @@ export class GameComponent implements OnInit {
     }
     this.gameService.addMove(move).subscribe(data => {
       if(this.currentPlayer==="p1") {
-        this.moves[position]=2
+        this.moves[position]=1
         this.currentPlayer = "p2"
       }
       else {
-        this.moves[position]=1
+        this.moves[position]=2
         this.currentPlayer = "p1"
       }
       if(data.isFinished) {
