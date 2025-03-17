@@ -34,13 +34,13 @@
         icon="/assets/images/repeat.png"
         text="Reset"
         classButton="game-action"
-        (onClick)="toggleModal()"
       >
       </app-button>
       <app-button
         icon="/assets/images/logout.png"
         text="Exit"
         classButton="game-action"
+        (onClick)="toggleModal()"
       >
       </app-button>
     </div>
@@ -50,6 +50,7 @@
     <app-popup
       [isOpen]="showModal()"
       (close)="toggleModal()"
+      (restart)="restartGame()"
       >
     </app-popup>
   <!-- End Modal Winner-->

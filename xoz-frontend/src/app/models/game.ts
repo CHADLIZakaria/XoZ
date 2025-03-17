@@ -16,8 +16,8 @@ export interface Move {
     id_player: number;
 }
 export interface GameResult {
-    moves: Move[];
-    isFinished: boolean;
+    movesWin: Move[];
+    finished: boolean;
 }
 export interface CurrentGame {
     game: Game;

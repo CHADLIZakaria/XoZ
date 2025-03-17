@@ -6,14 +6,17 @@ import { GameResult, Move, Party } from 'src/app/models/game';
 @Injectable()
 export class GameService {
   private apiUrl: string = 'http://localhost:8080/'
-    constructor(private http: HttpClient) { }
-  
-    addMove(move: Move): Observable<GameResult> {
-      return this.http.post<GameResult>(`${this.apiUrl}move`, move)
-    }  
+  constructor(private http: HttpClient) { }
 
-    getParty(uid: string): Observable<Party> {
-      return this.http.get<Party>(`${this.apiUrl}party/${uid}`)
-    }
+  addMove(move: Move): Observable<GameResult> {
+    return this.http.post<GameResult>(`${this.apiUrl}move`, move)
+  }  
 
+  getParty(uid: string): Observable<Party> {
+    return this.http.get<Party>(`${this.apiUrl}party/${uid}`)
+  }
+
+  restartGame(uid: string): Observable<Party> {
+    return this.http.get<Party>(`${this.apiUrl}party/${uid}/restart`)
+  }
 }

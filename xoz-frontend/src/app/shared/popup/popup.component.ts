@@ -39,10 +39,16 @@ import { animate, group, query, state, style, transition, trigger } from '@angul
 })
 export class PopupComponent {
   close = output<void>();
-  isOpen = input.required<boolean>();  
+  isOpen = input.required<boolean>(); 
+  restart = output<void>(); 
   
   onClose() {
     this.close.emit()
+  }
+
+  onRestart() {
+    this.close.emit()
+    this.restart.emit()
   }
 
 }

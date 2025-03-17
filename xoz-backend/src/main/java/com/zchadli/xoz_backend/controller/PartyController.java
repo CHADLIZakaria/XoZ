@@ -19,4 +19,11 @@ public class PartyController {
     public PartyDto findParty(@PathVariable String uid) throws Exception {
         return  partyService.findParty(uid);
     }
+
+    @GetMapping("{uid}/restart")
+    public PartyDto restartParty(@PathVariable String uid) throws Exception {
+        return  partyService.findParty(uid);
+    }
+
+
 }

@@ -5,4 +5,5 @@ import com.zchadli.xoz_backend.dto.PartyDto;
 public interface PartyService {
     PartyDto saveParty();
     PartyDto findParty(String uid) throws Exception;
+    PartyDto restartGame(String uid) throws Exception;
 }

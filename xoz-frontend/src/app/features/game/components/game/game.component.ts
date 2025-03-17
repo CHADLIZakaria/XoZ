@@ -77,16 +77,26 @@ export class GameComponent implements OnInit {
         this.moves[position]=2
         this.currentPlayer = "p1"
       }
-      if(data.isFinished) {
-        this.movesWin = data.moves;
+      if(data.finished) {
+        this.movesWin = data.movesWin;
         this.toggleModal()
       }
-    });
-   
+    });   
   }
 
   toggleModal() {
     this.showModal.update((visible) => !visible);
+  }
+
+  restartGame() {
+    console.log("restart game")
+    this.gameService.restartGame(this.uidParty).subscribe(
+      data => {
+        this.currentGame = data.currentGame.game
+        this.moves = {}
+        this.movesWin = []
+      }
+    )
   }
 
 }

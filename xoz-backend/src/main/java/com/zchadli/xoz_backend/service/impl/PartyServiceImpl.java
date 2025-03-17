@@ -47,5 +47,18 @@ public class PartyServiceImpl implements PartyService  {
         GameDto gameDto = xoZMapper.toGameDto(currentGame);
         return xoZMapper.toPartyDto(party, gameDto, gameResultDto);
     }
-
+    @Override
+    public PartyDto restartGame(String uid) throws Exception {
+        Party party = partyDao.findByUid(uid).orElseThrow(() -> new Exception("Not found"));
+        Game currentGame = party.getGames().stream().filter(Game::isCurrent).findFirst().orElseThrow(() -> new Exception("Not found"));
+        currentGame.setCurrent(false);
+        // Set game to Party
+        Game game = new Game();
+        game.setParty(party);
+        game.setCurrent(true);
+        // Save new Game
+        GameDto gameSaved = gameService.saveGame(game);
+        GameResultDto gameResultDto = new GameResultDto(false, new ArrayList<>());
+        return xoZMapper.toPartyDto(party, gameSaved, gameResultDto);
+    }
 }
