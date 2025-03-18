@@ -4,16 +4,18 @@ export interface Player {
 }
 export interface Game {
     id: number;
-    players: Player[];
     finished: boolean;
     current: boolean;
-    moves: Move[]
+    moves: Move[];
+    idWinner: number;
+    idCurrentPlayer: number;
 }
 export interface Move {
     id: number | undefined;
     position: string;
     id_game: number;
     id_player: number;
+    id_next_player: number;
 }
 export interface GameResult {
     movesWin: Move[];
@@ -27,4 +29,6 @@ export interface Party {
     id: number | undefined;
     uid: string;
     currentGame: CurrentGame;
+    players: Player[];
+    history: Game[];
 }
