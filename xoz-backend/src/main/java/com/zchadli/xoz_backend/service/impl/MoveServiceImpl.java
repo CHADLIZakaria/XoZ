@@ -1,10 +1,12 @@
 package com.zchadli.xoz_backend.service.impl;
 
 import com.zchadli.xoz_backend.dao.MoveDao;
+import com.zchadli.xoz_backend.dao.PartyDao;
 import com.zchadli.xoz_backend.dto.GameDto;
 import com.zchadli.xoz_backend.dto.GameResultDto;
 import com.zchadli.xoz_backend.dto.MoveDto;
 import com.zchadli.xoz_backend.mapper.XoZMapper;
+import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Move;
 import com.zchadli.xoz_backend.service.GameService;
 import com.zchadli.xoz_backend.service.MoveService;
@@ -21,17 +23,23 @@ public class MoveServiceImpl implements MoveService  {
     private final MoveDao moveDao;
     private final XoZMapper xoZMapper;
     private final GameService gameService;
+    private final PartyDao partyDao;
     @Override
     @Transactional
-    public GameResultDto saveMove(MoveDto moveDto) {
+    public GameResultDto saveMove(MoveDto moveDto) throws Exception {
         Move move = xoZMapper.toMove(moveDto);
-        GameDto game = gameService.getGame(move.getGame().getId());
-        if(game.finished()) {
+        GameDto gameDto = gameService.getGame(move.getGame().getId());
+        if(gameDto.finished()) {
             return null;
         }
         moveDao.save(move);
+        gameService.updateCurrentPlayer(gameDto.id(), moveDto.id_next_player());
         Set<Move> movesPlayer = moveDao.findByGameIdAndPlayerId(move.getGame().getId(), move.getPlayer().getId());
-        return getGameResult(movesPlayer);
+        GameResultDto gameResultDto = getGameResult(movesPlayer);
+        if(gameResultDto.finished()) {
+            gameService.updateWinner(gameDto.id(), gameResultDto.movesWin().get(0).id_player());
+        }
+        return gameResultDto;
     }
 
     @Override

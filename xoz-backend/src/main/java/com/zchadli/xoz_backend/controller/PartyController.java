@@ -21,8 +21,8 @@ public class PartyController {
     }
 
     @GetMapping("{uid}/restart")
-    public PartyDto restartParty(@PathVariable String uid) throws Exception {
-        return  partyService.findParty(uid);
+    public PartyDto restartGame(@PathVariable String uid) throws Exception {
+        return  partyService.restartGame(uid);
     }
 
 

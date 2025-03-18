@@ -18,7 +18,7 @@ public class Player {
     private Long id;
     private String name;
     @ManyToMany(mappedBy = "players")
-    private Set<Game> games = new HashSet<>();
+    private Set<Party> games = new HashSet<>();
     @OneToMany(mappedBy = "player")
     private Set<Move> moves = new HashSet<>();
     @Override

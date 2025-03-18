@@ -4,12 +4,14 @@ import com.zchadli.xoz_backend.dto.*;
 import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Move;
 import com.zchadli.xoz_backend.model.Party;
+import com.zchadli.xoz_backend.model.Player;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface XoZMapper {
@@ -29,8 +31,11 @@ public interface XoZMapper {
     MoveDto toMoveDto(Move move);
 
     @Mapping(source = "party.id", target = "id")
-    @Mapping(target = "currentGame", expression = "java(toCurrentGameDto(currentGame, gameResult))") // Call method explicitly
+    @Mapping(target = "currentGame", expression = "java(toCurrentGameDto(currentGame, gameResult))")
+    @Mapping(source = "party.games", target = "history")
     PartyDto toPartyDto(Party party, GameDto currentGame, GameResultDto gameResult);
+
+    List<PlayerDto> toPlayersDto(List<Player> players);
 
     default CurrentGameDto toCurrentGameDto(GameDto gameDto, GameResultDto gameResult) {
         return (gameDto != null && gameResult != null) ? new CurrentGameDto(gameDto, gameResult) : null;

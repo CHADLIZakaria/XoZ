@@ -17,12 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
     private final GameDao gameDao;
-    private final PlayerDao playerDao;
     private final XoZMapper xoZMapper;
     @Override
     public GameDto saveGame(Game game) {
-        List<Player> players = playerDao.findAll();
-        game.setPlayers(new HashSet<>(players));
         Game gameSaved = gameDao.save(game);
         return xoZMapper.toGameDto(gameSaved);
     }
@@ -30,6 +27,21 @@ public class GameServiceImpl implements GameService {
     @Override
     public GameDto getGame(Long id) {
         return xoZMapper.toGameDto(gameDao.findById(id).orElseThrow());
+    }
+
+    @Override
+    public void updateWinner(Long id, Long idWinner) throws Exception {
+       Game game = gameDao.findById(id).orElseThrow(() -> new Exception("Not Found"));
+       game.setIdWinner(idWinner);
+       game.setFinished(true);
+       gameDao.save(game);
+    }
+
+    @Override
+    public void updateCurrentPlayer(Long id, Long idCurrentPlayer) throws Exception {
+        Game game = gameDao.findById(id).orElseThrow(() -> new Exception("Not Found"));
+        game.setIdCurrentPlayer(idCurrentPlayer);
+        gameDao.save(game);
     }
 
 }

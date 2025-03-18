@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MoveController {
     private final MoveService moveService;
     @PostMapping
-    public GameResultDto save(@RequestBody MoveDto move) {
+    public GameResultDto save(@RequestBody MoveDto move) throws Exception {
         return moveService.saveMove(move);
     }
 }

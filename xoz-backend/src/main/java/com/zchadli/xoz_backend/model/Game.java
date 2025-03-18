@@ -17,14 +17,6 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany
-    @JoinTable(
-        name="player_games",
-        joinColumns = @JoinColumn(name="id_game"),
-        inverseJoinColumns = @JoinColumn(name="id_player")
-    )
-    @ToString.Exclude
-    private Set<Player> players = new HashSet<>();
     @OneToMany(mappedBy = "game")
     @ToString.Exclude
     private Set<Move> moves = new HashSet<>();
@@ -35,6 +27,8 @@ public class Game {
     @ManyToOne
     @JoinColumn(name="id_party")
     private Party party;
+    private Long idWinner;
+    private Long idCurrentPlayer;
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
