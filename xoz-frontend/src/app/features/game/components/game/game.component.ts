@@ -60,6 +60,7 @@ export class GameComponent implements OnInit {
       this.gameService.getParty(this.uidParty).subscribe(
         (data) => {
           this.isLoading = false;
+          console.log(data)
           this.currentGame = data.currentGame.game
           this.history = data.history.filter(game => game.finished===true)
           this.players = data.players.sort((player1, player2) => player1.id - player2.id)
@@ -116,9 +117,14 @@ export class GameComponent implements OnInit {
         this.currentGame.idCurrentPlayer = this.players[0].id
       }
       if(data.finished) {
+        this.currentGame = {
+          ...this.currentGame, 
+          finished: true,
+          idWinner: data.movesWin.length > 0 ? data.movesWin[0].id_player : null
+        }
         this.history.push(this.currentGame)
+        console.log(this.history)
         if(data.movesWin.length > 0) {
-          console.log(data.movesWin)
           this.movesWin = data.movesWin;
           this.showAnimation = data.movesWin[0].id_player==this.players[0].id ? 'player1' : 'player2';
         }
@@ -142,8 +148,6 @@ export class GameComponent implements OnInit {
     this.gameService.restartGame(this.uidParty).subscribe(
       data => {
         this.currentGame = data.currentGame.game
-        console.log(this.currentGame)
-        //this.players = data.players.sort((player1, player2) => player1.id - player2.id)
         this.moves = {}
         this.movesWin = []
       }

@@ -8,4 +8,5 @@ import java.util.Set;
 
 public interface MoveDao extends JpaRepository<Move, Long> {
     Set<Move> findByGameIdAndPlayerId(Long idGame, Long idPlayer);
+    Set<Move> findByGameId(Long idGame);
 }

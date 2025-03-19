@@ -1,12 +1,10 @@
 package com.zchadli.xoz_backend.service.impl;
 
 import com.zchadli.xoz_backend.dao.MoveDao;
-import com.zchadli.xoz_backend.dao.PartyDao;
 import com.zchadli.xoz_backend.dto.GameDto;
 import com.zchadli.xoz_backend.dto.GameResultDto;
 import com.zchadli.xoz_backend.dto.MoveDto;
 import com.zchadli.xoz_backend.mapper.XoZMapper;
-import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Move;
 import com.zchadli.xoz_backend.service.GameService;
 import com.zchadli.xoz_backend.service.MoveService;
@@ -23,7 +21,6 @@ public class MoveServiceImpl implements MoveService  {
     private final MoveDao moveDao;
     private final XoZMapper xoZMapper;
     private final GameService gameService;
-    private final PartyDao partyDao;
     @Override
     @Transactional
     public GameResultDto saveMove(MoveDto moveDto) throws Exception {
@@ -33,10 +30,15 @@ public class MoveServiceImpl implements MoveService  {
             return null;
         }
         moveDao.save(move);
+        //Check Draw
+        if(moveDao.findByGameId(gameDto.id()).size()==9) {
+            gameService.updateWinner(gameDto.id(),null);
+            return new GameResultDto(true, Collections.emptyList());
+        }
         gameService.updateCurrentPlayer(gameDto.id(), moveDto.id_next_player());
         Set<Move> movesPlayer = moveDao.findByGameIdAndPlayerId(move.getGame().getId(), move.getPlayer().getId());
         GameResultDto gameResultDto = getGameResult(movesPlayer);
-        if(gameResultDto.finished()) {
+        if(gameResultDto.finished() && !gameResultDto.movesWin().isEmpty()) {
             gameService.updateWinner(gameDto.id(), gameResultDto.movesWin().get(0).id_player());
         }
         return gameResultDto;
@@ -53,7 +55,10 @@ public class MoveServiceImpl implements MoveService  {
             return gameResultDto;
         }
         gameResultDto = diagonalWin(movesPlayer);
-        return gameResultDto;
+        if(gameResultDto.finished()) {
+            return gameResultDto;
+        }
+        return draw(movesPlayer);
     }
 
     private GameResultDto rowWin(Set<Move> movePlayer) {
@@ -86,5 +91,8 @@ public class MoveServiceImpl implements MoveService  {
             return new GameResultDto(true, movePlayer.stream().filter(move -> move.getX() + move.getY() == 2).map(xoZMapper::toMoveDto).toList());
         }
         return new GameResultDto(false, Collections.emptyList());
+    }
+    private GameResultDto draw(Set<Move> movePlayer) {
+        return new GameResultDto(movePlayer.size()==9, Collections.emptyList());
     }
 }

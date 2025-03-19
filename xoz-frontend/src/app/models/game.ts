@@ -7,7 +7,7 @@ export interface Game {
     finished: boolean;
     current: boolean;
     moves: Move[];
-    idWinner: number;
+    idWinner: number | null;
     idCurrentPlayer: number;
 }
 export interface Move {
