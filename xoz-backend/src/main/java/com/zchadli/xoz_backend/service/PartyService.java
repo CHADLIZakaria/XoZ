@@ -6,4 +6,7 @@ public interface PartyService {
     PartyDto saveParty();
     PartyDto findParty(String uid) throws Exception;
     PartyDto restartGame(String uid) throws Exception;
+    PartyDto resetGame(String uid) throws Exception;
+    void deleteParty(String Uid);
+
 }

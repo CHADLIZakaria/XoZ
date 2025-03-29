@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table
@@ -18,9 +18,9 @@ public class Player {
     private Long id;
     private String name;
     @ManyToMany(mappedBy = "players")
-    private Set<Party> games = new HashSet<>();
+    private List<Party> games = new ArrayList<>();
     @OneToMany(mappedBy = "player")
-    private Set<Move> moves = new HashSet<>();
+    private List<Move> moves = new ArrayList<>();
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

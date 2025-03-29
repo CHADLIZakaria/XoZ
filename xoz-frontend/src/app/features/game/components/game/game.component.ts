@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Game, Move, Player } from 'src/app/models/game';
 import { PopupComponent } from 'src/app/shared/popup/popup.component';
 import { ButtonComponent } from "../../../../shared/button/button.component";
@@ -50,7 +50,10 @@ export class GameComponent implements OnInit {
   showAnimation: 'player1' | 'player2' | 'draw' | 'hidden' = 'hidden';
   isLoading = false;
 
-  constructor(private gameService: GameService, private route: ActivatedRoute) {
+  constructor(
+    private gameService: GameService, 
+    private route: ActivatedRoute,
+    private router: Router) {
   }
 
   ngOnInit(): void {
@@ -123,7 +126,6 @@ export class GameComponent implements OnInit {
           idWinner: data.movesWin.length > 0 ? data.movesWin[0].id_player : null
         }
         this.history.push(this.currentGame)
-        console.log(this.history)
         if(data.movesWin.length > 0) {
           this.movesWin = data.movesWin;
           this.showAnimation = data.movesWin[0].id_player==this.players[0].id ? 'player1' : 'player2';
@@ -140,10 +142,6 @@ export class GameComponent implements OnInit {
     this.showModal.update((visible) => !visible);
   }
 
-  resetGame() {
-    this.showAnimation = 'hidden';
-  }
-
   restartGame() {
     this.gameService.restartGame(this.uidParty).subscribe(
       data => {
@@ -152,6 +150,22 @@ export class GameComponent implements OnInit {
         this.movesWin = []
       }
     )
+  }
+
+  resetGame() {
+    this.gameService.resetGame(this.uidParty).subscribe(
+      data => {
+        this.currentGame = data.currentGame.game
+        this.moves = {}
+        this.movesWin = []
+      }
+    )
+  }
+
+  exit() {
+    this.gameService.deleteParty(this.uidParty).subscribe(() => {
+      this.router.navigate(['/'])
+    })
   }
 
 }

@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table
@@ -19,9 +17,9 @@ public class Party {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String uid;
-    @OneToMany(mappedBy = "party")
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private Set<Game> games = new HashSet<>();
+    private List<Game> games = new ArrayList<>();
     @ManyToMany
     @JoinTable(
             name="player_parties",
@@ -29,7 +27,7 @@ public class Party {
             inverseJoinColumns = @JoinColumn(name="id_player")
     )
     @ToString.Exclude
-    private Set<Player> players = new HashSet<>();
+    private List<Player> players = new ArrayList<>();
     public Party() {
         this.uid = UUID.randomUUID().toString();
     }

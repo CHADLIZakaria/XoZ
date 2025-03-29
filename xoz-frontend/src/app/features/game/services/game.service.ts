@@ -19,4 +19,10 @@ export class GameService {
   restartGame(uid: string): Observable<Party> {
     return this.http.get<Party>(`${this.apiUrl}party/${uid}/restart`)
   }
+  resetGame(uid: string): Observable<Party> {
+    return this.http.get<Party>(`${this.apiUrl}party/${uid}/reset`)
+  }
+  deleteParty(uid: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}party/${uid}`)
+  }
 }

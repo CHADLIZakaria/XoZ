@@ -1,5 +1,5 @@
 @if(!isLoading) {
-  <div class="h-100">
+  <div class="game-wrapper ">
     <div class="w-50 m-auto stats row gap-3 py-3">
       <div class="stat bg-white px-3 col text-center d-flex flex-column">
         <span class="fs-2 fw-bold">
@@ -50,17 +50,17 @@
       </div>    
       <div class="d-flex flex-column justify-content-center align-items-start gap-5 col-3">
         <app-button
-          icon="/assets/images/repeat.png"
-          text="Reset"
+          [icon]="'/assets/images/'+(currentGame.finished ? 'repeat':'restart')+'.png'"
+          [text]="currentGame.finished ? 'Restart' : 'Reset'"
           classButton="game-action"
-          (onClick)="resetGame()"
+          (onClick)="currentGame.finished ? restartGame(): resetGame()"
         >
         </app-button>
         <app-button
           icon="/assets/images/logout.png"
           text="Exit"
           classButton="game-action"
-          (onClick)="toggleModal()"
+          (onClick)="exit()"
         >
         </app-button>
       </div>

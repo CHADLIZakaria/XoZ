@@ -9,5 +9,6 @@ import java.util.Set;
 
 public interface MoveService {
     GameResultDto saveMove(MoveDto move) throws Exception;
-    GameResultDto getGameResult(Set<Move> movesPlayer);
+    GameResultDto getGameResult(List<Move> movesPlayer);
+    void deleteAllByGameId(List<Long> movesId);
 }
