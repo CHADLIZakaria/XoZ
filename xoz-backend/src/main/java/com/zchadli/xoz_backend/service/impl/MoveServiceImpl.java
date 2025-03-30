@@ -36,7 +36,7 @@ public class MoveServiceImpl implements MoveService  {
             return new GameResultDto(true, Collections.emptyList());
         }
         gameService.updateCurrentPlayer(gameDto.id(), moveDto.id_next_player());
-        Set<Move> movesPlayer = moveDao.findByGameIdAndPlayerId(move.getGame().getId(), move.getPlayer().getId());
+        List<Move> movesPlayer = moveDao.findByGameIdAndPlayerId(move.getGame().getId(), move.getPlayer().getId());
         GameResultDto gameResultDto = getGameResult(movesPlayer);
         if(gameResultDto.finished() && !gameResultDto.movesWin().isEmpty()) {
             gameService.updateWinner(gameDto.id(), gameResultDto.movesWin().get(0).id_player());
@@ -45,7 +45,7 @@ public class MoveServiceImpl implements MoveService  {
     }
 
     @Override
-    public GameResultDto getGameResult(Set<Move> movesPlayer) {
+    public GameResultDto getGameResult(List<Move> movesPlayer) {
         GameResultDto gameResultDto = rowWin(movesPlayer);
         if(gameResultDto.finished()) {
             return gameResultDto;
@@ -61,7 +61,12 @@ public class MoveServiceImpl implements MoveService  {
         return draw(movesPlayer);
     }
 
-    private GameResultDto rowWin(Set<Move> movePlayer) {
+    @Override
+    public void deleteAllByGameId(List<Long> movesId) {
+        moveDao.deleteALlByIdIn(movesId);
+    }
+
+    private GameResultDto rowWin(List<Move> movePlayer) {
         Map<Integer, Long> countRow = movePlayer.stream().collect(Collectors.groupingBy(Move::getX, Collectors.counting()));
         for(Map.Entry<Integer, Long> entry: countRow.entrySet()) {
             if(entry.getValue()==3L) {
@@ -71,7 +76,7 @@ public class MoveServiceImpl implements MoveService  {
         }
         return new GameResultDto(false, Collections.emptyList());
     }
-    private GameResultDto columnWin(Set<Move> movePlayer) {
+    private GameResultDto columnWin(List<Move> movePlayer) {
         Map<Integer, Long> countRow = movePlayer.stream().collect(Collectors.groupingBy(Move::getY, Collectors.counting()));
         for(Map.Entry<Integer, Long> entry: countRow.entrySet()) {
             if(entry.getValue()==3L) {
@@ -81,7 +86,7 @@ public class MoveServiceImpl implements MoveService  {
         }
         return new GameResultDto(false, Collections.emptyList());
     }
-    private GameResultDto diagonalWin(Set<Move> movePlayer) {
+    private GameResultDto diagonalWin(List<Move> movePlayer) {
         boolean diagonal1 = movePlayer.stream().filter(move -> Objects.equals(move.getX(), move.getY())).toList().size()==3;
         boolean diagonal2 = movePlayer.stream().filter(move -> move.getX() + move.getY() == 2).toList().size()==3;
         if(diagonal1) {
@@ -92,7 +97,7 @@ public class MoveServiceImpl implements MoveService  {
         }
         return new GameResultDto(false, Collections.emptyList());
     }
-    private GameResultDto draw(Set<Move> movePlayer) {
+    private GameResultDto draw(List<Move> movePlayer) {
         return new GameResultDto(movePlayer.size()==9, Collections.emptyList());
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface PartyDao extends JpaRepository<Party, String> {
+public interface PartyDao extends JpaRepository<Party, Long> {
     Optional<Party> findByUid(String uid);
+    void deleteByUid(String uid);
 }

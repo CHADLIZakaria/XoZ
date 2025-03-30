@@ -1,6 +1,6 @@
-import { Component, Input, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { ButtonComponent } from "../button/button.component";
-import { animate, group, query, state, style, transition, trigger } from '@angular/animations';
+import { animate, group, query, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-popup',

@@ -1,44 +1,49 @@
 @import 'src/styles/variables.less';
 
-.game {
-    height: 80%;
-    .game-grid {
-        display: flex;
-        flex-wrap: wrap;    
-        .btn-game {
-          width: 33.33%;
-          height: 33.33%;
-          border: none;
+.game-wrapper {
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  .game {
+      flex: 1;
+      .game-grid {
           display: flex;
-          justify-content: center;
-          align-items: center;
-          background-color: transparent;
-          cursor: pointer;
-          border-right: 2px solid #BDE0FE;
-          border-bottom: 2px solid #BDE0FE;
-          font-weight: bold;
-          font-size: 2rem;
-          &:nth-child(7),
-          &:nth-child(8),
-          &:nth-child(9) {
-            border-bottom: 0;
+          flex-wrap: wrap;    
+          .btn-game {
+            height: 33.33%;
+            width: 33.33%;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+            cursor: pointer;
+            border-right: 2px solid #BDE0FE;
+            border-bottom: 2px solid #BDE0FE;
+            font-weight: bold;
+            font-size: 2rem;
+            &:nth-child(7),
+            &:nth-child(8),
+            &:nth-child(9) {
+              border-bottom: 0;
+            }
+            &:nth-child(3n) {
+              border-right: none;
+            }
+            &.active {
+              background-color: rgba(@primary-color, 0.5);
+              border: 2px solid @primary-color;
+            }
+            img {
+              max-width: 80%;   
+              max-height: 80%;     
+            }
+            span {
+              display: inline-block;
+              height: 100%;  
+            }
           }
-          &:nth-child(3n) {
-            border-right: none;
-          }
-          &.active {
-            background-color: rgba(@primary-color, 0.5);
-            border: 2px solid @primary-color;
-          }
-          img {
-            max-width: 80%;   
-            max-height: 80%;     
-          }
-          span {
-            display: inline-block;
-            height: 100%;  
-          }
-        }
-    }
-    
+      }
+      
+  }
 }

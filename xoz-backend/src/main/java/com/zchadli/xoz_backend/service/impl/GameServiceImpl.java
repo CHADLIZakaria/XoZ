@@ -1,17 +1,13 @@
 package com.zchadli.xoz_backend.service.impl;
 
 import com.zchadli.xoz_backend.dao.GameDao;
-import com.zchadli.xoz_backend.dao.PlayerDao;
 import com.zchadli.xoz_backend.dto.GameDto;
 import com.zchadli.xoz_backend.mapper.XoZMapper;
 import com.zchadli.xoz_backend.model.Game;
-import com.zchadli.xoz_backend.model.Player;
 import com.zchadli.xoz_backend.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table
@@ -17,9 +17,9 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private Set<Move> moves = new HashSet<>();
+    private List<Move> moves = new ArrayList<>();
     @Column(columnDefinition = "BOOLEAN DEFAULT false")
     private boolean isFinished;
     @Column(columnDefinition = "BOOLEAN DEFAULT true")

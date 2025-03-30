@@ -17,10 +17,18 @@ export class HomeComponent {
   constructor(private router: Router, private homeService: HomeService) {
   }
 
-  handleClick() {
-    this.homeService.save().subscribe(
+  goToParty() {
+    this.homeService.saveLocalParty().subscribe(
       (data) => { 
         this.router.navigate([`/party/${data.uid}`])
+      }
+    );
+  }
+
+  goToPartyRemotly() {
+    this.homeService.saveLocalParty().subscribe(
+      (data) => { 
+        this.router.navigate([`remote-party/${data.uid}`])
       }
     );
   }
