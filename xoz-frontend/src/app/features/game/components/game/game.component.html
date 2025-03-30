@@ -9,7 +9,7 @@
           @if(showAnimation==='player1') {
             <span class="text-success fw-semibold fst-italic" [@fadeIn]="showAnimation ? 'visible' : 'hidden'" (@fadeIn.done)="showAnimation = 'hidden'">+1</span>
           }
-        </span>      
+        </span>
       </div>
       <div class="stat bg-white px-3 col text-center d-flex flex-column">
         <span class="fs-2 fw-bold">
@@ -19,7 +19,7 @@
           @if(showAnimation==='draw') {
             <span class="text-success fw-semibold fst-italic" [@fadeIn]="showAnimation ? 'visible' : 'hidden'" (@fadeIn.done)="showAnimation = 'hidden'">+1</span>
           }
-        </span>      
+        </span>
       </div>
       <div class="stat bg-white px-3 col text-center d-flex flex-column">
         <span class="fs-2 fw-bold">
@@ -29,14 +29,14 @@
           @if(showAnimation==='player2') {
             <span class="text-success fw-semibold fst-italic" [@fadeIn]="showAnimation ? 'visible' : 'hidden'" (@fadeIn.done)="showAnimation = 'hidden'">+1</span>
           }
-        </span>      
+        </span>
       </div>
     </div>
     <div class="game row m-0">
       <div class="offset-3 col-6 game-grid bg-white py-5 px-3 rounded-2">
         @for (position of gridArray; track position) {
-          <button 
-            [class.active]="isMoveWin(position)" 
+          <button
+            [class.active]="isMoveWin(position)"
             class="btn-game"
             (click)="addMove(position)">
             @if(moves[position]) {
@@ -44,10 +44,10 @@
             }
             @else {
               <span></span>
-            } 
+            }
           </button>
         }
-      </div>    
+      </div>
       <div class="d-flex flex-column justify-content-center align-items-start gap-5 col-3">
         <app-button
           [icon]="'/assets/images/'+(currentGame.finished ? 'repeat':'restart')+'.png'"
@@ -65,7 +65,7 @@
         </app-button>
       </div>
     </div>
-  
+
     <!-- Start Modal Winner -->
       <app-popup
         [isOpen]="showModal()"
