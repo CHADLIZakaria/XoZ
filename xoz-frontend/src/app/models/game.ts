@@ -32,3 +32,7 @@ export interface Party {
     players: Player[];
     history: Game[];
 }
+export interface GameStart {
+    players: string[];
+    partyUid: string;
+}

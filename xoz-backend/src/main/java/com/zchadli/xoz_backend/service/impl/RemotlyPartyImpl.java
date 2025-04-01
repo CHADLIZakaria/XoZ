@@ -20,7 +20,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,14 +42,11 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
             party.getPlayers().add(player);
             game.setIdCurrentPlayer(party.getPlayers().get(0).getId());
             GameDto gameDto = gameService.saveGame(game);
-            kafkaTemplate.send("party-topic", "Player 2"  + " joined party UID: " + party.getUid());
-            messagingTemplate.convertAndSend("/party-topic", "Player 2"  + " joined party UID: " + party.getUid());
+            notifyGameStart(party);
             return xoZMapper.toPartyDto(party, gameDto, new GameResultDto(false, Collections.emptyList()));
         }
         else {
             Party party = createParty();
-            kafkaTemplate.send("party-topic", "Player 1"  + " joined party UID: " + party.getUid());
-            messagingTemplate.convertAndSend("/party-topic", "Player 1"  + " joined party UID: " + party.getUid());
             return xoZMapper.toPartyDto(party, null, new GameResultDto(false, Collections.emptyList()));
         }
     }
@@ -63,13 +59,11 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
         return partyDao.save(party);
     }
 
-
     public void notifyGameStart(Party party) {
         List<String> playerNames = party.getPlayers().stream()
                 .map(Player::getName)
                 .toList();
         GameStartDto gameStartDto = new GameStartDto(playerNames, party.getUid());
-
         messagingTemplate.convertAndSend("/party-topic", gameStartDto);
     }
 }

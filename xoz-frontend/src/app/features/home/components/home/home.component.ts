@@ -26,7 +26,7 @@ export class HomeComponent {
   }
 
   goToPartyRemotly() {
-    this.homeService.saveLocalParty().subscribe(
+    this.homeService.saveRemoteParty().subscribe(
       (data) => { 
         this.router.navigate([`remote-party/${data.uid}`])
       }

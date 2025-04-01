@@ -1,6 +1,6 @@
-<h3>Party Updates</h3>
-<ul>
-    @for(message of messages; track message) {
-        <li>{{ message }}</li>
-    }
-</ul>
+@if((gameStart$ | async) == null) {
+    <span class="loader"></span>
+}
+@else {
+    <div>Game Started</div>
+}
