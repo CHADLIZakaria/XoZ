@@ -4,6 +4,7 @@ import com.zchadli.xoz_backend.dao.PartyDao;
 import com.zchadli.xoz_backend.dao.PlayerDao;
 import com.zchadli.xoz_backend.dto.GameDto;
 import com.zchadli.xoz_backend.dto.GameResultDto;
+import com.zchadli.xoz_backend.dto.GameStartDto;
 import com.zchadli.xoz_backend.dto.PartyDto;
 import com.zchadli.xoz_backend.mapper.XoZMapper;
 import com.zchadli.xoz_backend.model.Game;
@@ -28,12 +29,12 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
     private final PlayerDao playerDao;
     private final GameService gameService;
     private final XoZMapper xoZMapper;
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final KafkaTemplate<String, GameStartDto> kafkaTemplate; // 🔹 Inject KafkaTemplate
+
     @Override
     public PartyDto joinParty() throws Exception {
-        Optional<Party> partyExist = partyDao.findAll().stream().filter(party -> party.getPlayers().size()==1).findFirst();
-        if(partyExist.isPresent()) {
+        Optional<Party> partyExist = partyDao.findAll().stream().filter(party -> party.getPlayers().size() == 1).findFirst();
+        if (partyExist.isPresent()) {
             Party party = partyExist.get();
             Game game = new Game();
             game.setParty(party);
@@ -44,9 +45,9 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
             GameDto gameDto = gameService.saveGame(game);
             notifyGameStart(party);
             return xoZMapper.toPartyDto(party, gameDto, new GameResultDto(false, Collections.emptyList()));
-        }
-        else {
+        } else {
             Party party = createParty();
+            kafkaTemplate.send("game-start-topic", new GameStartDto(Collections.emptyList(), party.getUid()));
             return xoZMapper.toPartyDto(party, null, new GameResultDto(false, Collections.emptyList()));
         }
     }
@@ -64,13 +65,10 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
                 .map(Player::getName)
                 .toList();
         GameStartDto gameStartDto = new GameStartDto(playerNames, party.getUid());
-        messagingTemplate.convertAndSend("/party-topic", gameStartDto);
+
+        System.out.println("🔵 Sending GameStart event to /party-topic for players: " + playerNames);
+
+        kafkaTemplate.send("game-start-topic", gameStartDto);
+
     }
-}
-@Getter
-@Setter
-@AllArgsConstructor
-class GameStartDto {
-    private List<String> players;
-    private String partyUid;
 }
