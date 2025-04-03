@@ -10,7 +10,7 @@ import { Observable, of, tap } from 'rxjs';
   selector: 'app-game-remote',
   standalone: true,
   imports: [HttpClientModule, JsonPipe, AsyncPipe],
-  providers: [],
+  providers: [WebSocketService],
   templateUrl: './game-remote.component.html',
   styleUrl: './game-remote.component.less'
 })
@@ -21,15 +21,13 @@ export class GameRemoteComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    console.log("🎮 GameRemoteComponent initialized!");
-    this.gameStart$ = this.webSocketService.getPartyUpdates().pipe(
-      tap(data => console.log("🎮 Game Start Event Received:", data))
+    this.webSocketService.getPartyUpdates().subscribe(
+      data => {
+        console.log("📩 Received WebSocket Data:", data);
+      },
+      error => {
+        console.error("🚨 Error Receiving WebSocket Data:", error);
+      }
     );
-  
-    // 🔥 Force WebSocket activation
-    this.webSocketService.getPartyUpdates().subscribe(data => {
-      console.log("web "+data)
-    });
-    
   }
 }

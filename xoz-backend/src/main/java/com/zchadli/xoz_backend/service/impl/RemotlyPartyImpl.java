@@ -12,6 +12,7 @@ import com.zchadli.xoz_backend.model.Party;
 import com.zchadli.xoz_backend.model.Player;
 import com.zchadli.xoz_backend.service.GameService;
 import com.zchadli.xoz_backend.service.RemotlyPartyService;
+import com.zchadli.xoz_backend.service.producers.KafkaProducerService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
     private final PlayerDao playerDao;
     private final GameService gameService;
     private final XoZMapper xoZMapper;
-    private final KafkaTemplate<String, GameStartDto> kafkaTemplate; // 🔹 Inject KafkaTemplate
+   private final KafkaProducerService kafkaProducerService;
 
     @Override
     public PartyDto joinParty() throws Exception {
@@ -47,7 +48,7 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
             return xoZMapper.toPartyDto(party, gameDto, new GameResultDto(false, Collections.emptyList()));
         } else {
             Party party = createParty();
-            kafkaTemplate.send("game-start-topic", new GameStartDto(Collections.emptyList(), party.getUid()));
+            kafkaProducerService.send(new GameStartDto(Collections.emptyList(), party.getUid()));
             return xoZMapper.toPartyDto(party, null, new GameResultDto(false, Collections.emptyList()));
         }
     }
@@ -65,10 +66,7 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
                 .map(Player::getName)
                 .toList();
         GameStartDto gameStartDto = new GameStartDto(playerNames, party.getUid());
-
-        System.out.println("🔵 Sending GameStart event to /party-topic for players: " + playerNames);
-
-        kafkaTemplate.send("game-start-topic", gameStartDto);
+        kafkaProducerService.send(gameStartDto);
 
     }
 }

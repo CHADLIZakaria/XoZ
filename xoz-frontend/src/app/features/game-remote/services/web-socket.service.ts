@@ -1,43 +1,49 @@
 import { Injectable } from '@angular/core';
 import { Client } from '@stomp/stompjs';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import * as SockJS from 'sockjs-client';
 import { GameStart } from 'src/app/models/game';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class WebSocketService {
-  private client!: Client;
-  private partyUpdates = new Subject<GameStart>();
+  private stompClient!: Client;
+  private partyUpdates = new BehaviorSubject<GameStart | null>(null); // Ensure it emits values
 
   constructor() {
-    this.initWebsocket()
+    this.initWebsocket();
   }
+
   initWebsocket() {
-    this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+    const socket = new SockJS("wss://localhost:8080/ws");
+
+    this.stompClient = new Client({
+      webSocketFactory: () => socket,
       reconnectDelay: 5000,
-      debug: (str) => console.log('STOMP Debug:', str)
+      debug: (str) => console.log('STOMP Debug:', str),
     });
-    this.client.onConnect = () => {
+
+    this.stompClient.onConnect = () => {
       console.log("✅ WebSocket Connected!");
-      this.client.subscribe('/game-start-topic', (message) => {
-        console.log("📩 WebSocket Message Received:", message); // Full message log
-        const parsedMessage = JSON.parse(message.body);
-        console.log("📩 Parsed Message:", parsedMessage); // Log parsed data
-        this.partyUpdates.next(parsedMessage); // Emit parsed message to subscribers
+      this.stompClient.subscribe('aparty-topic', (message) => {
+        console.log("📩 WebSocket Message Received:", message.body);
+        try {
+          const parsedMessage: GameStart = JSON.parse(message.body);
+          console.log("📩 Parsed Message:", parsedMessage);
+          this.partyUpdates.next(parsedMessage); // Ensure values are emitted
+        } catch (error) {
+          console.error("🚨 Error Parsing WebSocket Message:", error);
+        }
       });
-      console.log("🟢 Subscribed to /topic/game-start-topic");
     };
-    this.client.onStompError = (frame) => {
+
+    this.stompClient.onStompError = (frame) => {
       console.error("❌ STOMP error:", frame);
     };
-    this.client.activate();
 
+    this.stompClient.activate();
   }
 
-  getPartyUpdates() {
+  getPartyUpdates(): Observable<GameStart | null> {
     return this.partyUpdates.asObservable();
   }
 }
