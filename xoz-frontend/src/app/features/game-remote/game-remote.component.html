@@ -1,6 +1,5 @@
-@if((gameStart$ | async) == null) {
-    <span class="loader"></span>
-}
-@else {
-    <div>Game Started</div>
+@if (gameStart$ | async) {
+  <div>Party: {{ gameStart$ | json }}</div>
+} @else {
+  <span class="loader"></span>
 }

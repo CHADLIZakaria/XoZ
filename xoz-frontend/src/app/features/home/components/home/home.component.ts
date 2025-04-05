@@ -3,14 +3,15 @@ import { ButtonComponent } from "../../../../shared/button/button.component";
 import { Route, Router } from '@angular/router';
 import { HomeService } from '../../services/home.service'
 import { HttpClientModule } from '@angular/common/http';
+import { WebSocketService } from 'src/app/features/game-remote/services/web-socket.service';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [ButtonComponent, HttpClientModule],
-  providers: [HomeService], 
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.less'
+    selector: 'app-home',
+    standalone: true,
+    imports: [ButtonComponent, HttpClientModule],
+    providers: [HomeService, WebSocketService],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.less'
 })
 export class HomeComponent {
 
@@ -26,11 +27,19 @@ export class HomeComponent {
   }
 
   goToPartyRemotly() {
-    this.homeService.saveRemoteParty().subscribe(
-      (data) => { 
-        this.router.navigate([`remote-party/${data.uid}`])
+   
+    this.homeService.saveRemoteParty().subscribe({
+      next: (data) => {
+        console.log('Remote party saved, navigating...');
+        this.router.navigate([`/remote-party/${data.uid}`]);
+      },
+      error: (err) => {
+        console.error('Error saving remote party:', err);
       }
-    );
+    });
+    
+    
   }
+  
 
 }

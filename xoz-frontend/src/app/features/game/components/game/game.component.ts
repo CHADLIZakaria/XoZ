@@ -8,35 +8,37 @@ import { GameService } from '../../services/game.service';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'app-game',
-  standalone: true,
-  imports: [HttpClientModule, ButtonComponent, PopupComponent],
-  providers: [GameService],
-  templateUrl: './game.component.html',
-  styleUrl: './game.component.less',
-  animations: [
-    trigger('btn-game', [
-      transition('void => *', [
-        style({
-          opacity: 0,
-          transform: 'scale(0.8)'
-        }),
-        animate('250ms', style({
-          opacity: 1,
-          transform: 'scale(1)'
-        }))
-      ])
-    ]),
-    trigger('fadeIn', [
-      transition(':enter', [
-        style({ filter: 'blur(3px)'}), 
-        animate('500ms ease-in', style({ opacity: 1, filter: 'blur(0px)' }))
-      ]),
-      transition(':leave', [
-        animate('2s ease-out', style({ opacity: 0.5, filter: 'blur(3px)' })) 
-      ])
-    ])
-  ]
+    selector: 'app-game',
+    standalone: true,
+    imports: [
+      HttpClientModule, ButtonComponent, PopupComponent
+    ],
+    providers: [GameService],
+    templateUrl: './game.component.html',
+    styleUrl: './game.component.less',
+    animations: [
+        trigger('btn-game', [
+            transition('void => *', [
+                style({
+                    opacity: 0,
+                    transform: 'scale(0.8)'
+                }),
+                animate('250ms', style({
+                    opacity: 1,
+                    transform: 'scale(1)'
+                }))
+            ])
+        ]),
+        trigger('fadeIn', [
+            transition(':enter', [
+                style({ filter: 'blur(3px)' }),
+                animate('500ms ease-in', style({ opacity: 1, filter: 'blur(0px)' }))
+            ]),
+            transition(':leave', [
+                animate('2s ease-out', style({ opacity: 0.5, filter: 'blur(3px)' }))
+            ])
+        ])
+    ]
 })
 export class GameComponent implements OnInit {
   uidParty!: string;

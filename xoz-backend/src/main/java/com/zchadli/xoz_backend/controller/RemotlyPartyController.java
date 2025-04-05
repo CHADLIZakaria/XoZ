@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/remote-party")
+@RequestMapping("/api/remote-party")
 @RequiredArgsConstructor
 public class RemotlyPartyController {
     private final RemotlyPartyService remotlyPartyService;

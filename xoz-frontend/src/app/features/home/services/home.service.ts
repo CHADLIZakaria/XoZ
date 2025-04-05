@@ -13,6 +13,6 @@ export class HomeService {
   }
 
   saveRemoteParty(): Observable<Party> {
-    return this.http.post<Party>(`${this.apiUrl}remote-party`, {})
+    return this.http.post<Party>(`${this.apiUrl}api/remote-party`, {})
   }
 }

@@ -1,5 +1,6 @@
 package com.zchadli.xoz_backend.service.impl;
 
+import com.zchadli.xoz_backend.constants.XoZConstants;
 import com.zchadli.xoz_backend.dao.PartyDao;
 import com.zchadli.xoz_backend.dao.PlayerDao;
 import com.zchadli.xoz_backend.dto.GameDto;
@@ -12,13 +13,8 @@ import com.zchadli.xoz_backend.model.Party;
 import com.zchadli.xoz_backend.model.Player;
 import com.zchadli.xoz_backend.service.GameService;
 import com.zchadli.xoz_backend.service.RemotlyPartyService;
-import com.zchadli.xoz_backend.service.producers.KafkaProducerService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,7 +26,7 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
     private final PlayerDao playerDao;
     private final GameService gameService;
     private final XoZMapper xoZMapper;
-   private final KafkaProducerService kafkaProducerService;
+    private final KafkaTemplate<String, GameStartDto> kafkaTemplate;
 
     @Override
     public PartyDto joinParty() throws Exception {
@@ -44,11 +40,10 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
             party.getPlayers().add(player);
             game.setIdCurrentPlayer(party.getPlayers().get(0).getId());
             GameDto gameDto = gameService.saveGame(game);
-            notifyGameStart(party);
             return xoZMapper.toPartyDto(party, gameDto, new GameResultDto(false, Collections.emptyList()));
         } else {
             Party party = createParty();
-            kafkaProducerService.send(new GameStartDto(Collections.emptyList(), party.getUid()));
+            notifyGameStart(party);
             return xoZMapper.toPartyDto(party, null, new GameResultDto(false, Collections.emptyList()));
         }
     }
@@ -66,7 +61,6 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
                 .map(Player::getName)
                 .toList();
         GameStartDto gameStartDto = new GameStartDto(playerNames, party.getUid());
-        kafkaProducerService.send(gameStartDto);
-
+        kafkaTemplate.send(XoZConstants.PARTY_TOPIC, gameStartDto);
     }
 }

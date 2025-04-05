@@ -4,7 +4,7 @@ import { Party } from 'src/app/models/game';
 
 @Injectable()
 export class GameRemoteService {
-  private apiUrl: string = 'http://localhost:8080/'
+  private apiUrl: string = 'http://localhost:8080/api/'
 
   constructor(private httpClient: HttpClient) { }
 
