@@ -1,5 +1,10 @@
-@if (gameStart$ | async) {
+@if(gameStart$?.players?.length == 2) {
   <div>Party: {{ gameStart$ | json }}</div>
-} @else {
-  <span class="loader"></span>
+  <div class="game-wrapper">
+    <app-game-header></app-game-header>
+    <app-game-grid></app-game-grid>
+  </div>
+}
+@else {
+  <app-loading></app-loading>
 }

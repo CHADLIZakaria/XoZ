@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Party } from 'src/app/models/game';
+import { GameStart, Party } from 'src/app/models/game';
 
 @Injectable()
 export class GameRemoteService {
@@ -11,4 +11,9 @@ export class GameRemoteService {
   save() {
     return this.httpClient.post<Party>(`${this.apiUrl}remote-party`, {})
   }
+
+  get(uid: string) {
+    return  this.httpClient.get<GameStart>(`${this.apiUrl}remote-party/${uid}`)
+  }
+
 }
