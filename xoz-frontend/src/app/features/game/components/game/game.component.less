@@ -8,28 +8,22 @@
       flex: 1;
       .game-grid {
           display: flex;
-          flex-wrap: wrap;    
+          flex-wrap: wrap;
+          column-gap: 15px;
+          row-gap: 15px;
+          background-color: #F0F0F0;
           .btn-game {
-            height: 33.33%;
-            width: 33.33%;
-            border: none;
+            height: calc(33.33% - 15px);
+            width: calc(33.33% - 15px);
+            border-radius: 6px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: transparent;
+            background-color: white;
             cursor: pointer;
-            border-right: 2px solid #BDE0FE;
-            border-bottom: 2px solid #BDE0FE;
+            border: 2px solid #4A6E8D;
             font-weight: bold;
             font-size: 2rem;
-            &:nth-child(7),
-            &:nth-child(8),
-            &:nth-child(9) {
-              border-bottom: 0;
-            }
-            &:nth-child(3n) {
-              border-right: none;
-            }
             &.active {
               background-color: rgba(@primary-color, 0.5);
               border: 2px solid @primary-color;
