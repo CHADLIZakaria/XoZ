@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { GameStart } from 'src/app/models/game';
+import { GameResult, GameStart, Move } from 'src/app/models/game';
 
 @Injectable()
 export class WebSocketService {
   private stompClient!: Client;
   private messageSubject = new Subject<GameStart>();
+  private movesSubject = new Subject<Move[]>();
+  
   private connectionStatus$ = new BehaviorSubject<boolean>(false);
   private isConnected = false;
   private isSubscribed = false;
@@ -29,6 +31,7 @@ export class WebSocketService {
 
         if (!this.isSubscribed) {
           this.subscribeToPartyTopic();
+          this.subscribeToMoveTopic()
         }
       },
 
@@ -59,8 +62,24 @@ export class WebSocketService {
     this.isSubscribed = true;
   }
 
+  private subscribeToMoveTopic(): void {
+    this.stompClient.subscribe('/topic/move-topic', (message: IMessage) => {
+      console.log('Received message:', message.body);
+      try {
+        const gameStart: Move[] = JSON.parse(message.body);
+        this.movesSubject.next(gameStart);
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    });
+  }
+
   onParty(): Observable<GameStart> {
     return this.messageSubject.asObservable();
+  }
+
+  onMoves(): Observable<Move[]> {
+    return this.movesSubject.asObservable();
   }
 
   getConnectionStatus(): Observable<boolean> {

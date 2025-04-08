@@ -14,11 +14,10 @@ import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Party;
 import com.zchadli.xoz_backend.model.Player;
 import com.zchadli.xoz_backend.service.GameService;
-import com.zchadli.xoz_backend.service.MoveService;
+import com.zchadli.xoz_backend.service.RemotlyMoveService;
 import com.zchadli.xoz_backend.service.RemotlyPartyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,9 +29,8 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
     private final PlayerDao playerDao;
     private final GameService gameService;
     private final XoZMapper xoZMapper;
-    private final MoveService moveService;
+    private final RemotlyMoveService remotlyMoveService;
     private final KafkaTemplate<String, GameStartDto> kafkaTemplate;
-    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public PartyDto joinParty() throws Exception {
@@ -63,9 +61,18 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
         return partyDao.save(party);
     }
     @Override
-    public PartyDto findParty(String uid) {
+    public PartyDto findDefaultParty(String uid) {
         Party party = partyDao.findByUid(uid).orElseThrow(() -> new PartyNotFoundException("Party Not Found with UID: "+uid));
         return xoZMapper.toPartyDto(party, null,  new GameResultDto(false, Collections.emptyList()));
+    }
+
+    @Override
+    public PartyDto findParty(String uid) {
+        Party party = partyDao.findByUid(uid).orElseThrow(() -> new PartyNotFoundException("Party Not Found with UID: "+uid));
+        Game currentGame = party.getGames().stream().filter(Game::isCurrent).findFirst().orElseThrow(() -> new CurrentGameNotFoundException("Current Game Not found for Party UID: "+uid));
+        GameResultDto gameResultDto = remotlyMoveService.getGameResult(currentGame.getMoves());
+        GameDto gameDto = xoZMapper.toGameDto(currentGame);
+        return xoZMapper.toPartyDto(party, gameDto, gameResultDto);
     }
 
     public void notifyGameStart(Party party) {

@@ -1,8 +1,7 @@
 package com.zchadli.xoz_backend.controller;
 
-import com.zchadli.xoz_backend.dto.GameStartDto;
-import com.zchadli.xoz_backend.dto.PartyDto;
-import com.zchadli.xoz_backend.dto.PlayerDto;
+import com.zchadli.xoz_backend.dto.*;
+import com.zchadli.xoz_backend.service.RemotlyMoveService;
 import com.zchadli.xoz_backend.service.RemotlyPartyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -12,17 +11,28 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class RemotlyPartyController {
     private final RemotlyPartyService remotlyPartyService;
+    private final RemotlyMoveService remotlyMoveService;
 
     @PostMapping()
     public PartyDto saveParty() throws Exception {
         return remotlyPartyService.joinParty();
     }
-    @GetMapping("/{uid}")
-    public GameStartDto getParty(@PathVariable String uid) {
-        PartyDto partyDto = remotlyPartyService.findParty(uid);
+
+    @GetMapping("/default/{uid}")
+    public GameStartDto getDefaultParty(@PathVariable String uid) {
+        PartyDto partyDto = remotlyPartyService.findDefaultParty(uid);
         GameStartDto gameStartDto = new GameStartDto();
         gameStartDto.setPartyUid(partyDto.uid());
         gameStartDto.setPlayers(partyDto.players().stream().map(PlayerDto::name).toList());
         return gameStartDto;
+    }
+    @GetMapping("{uid}")
+    public PartyDto findParty(@PathVariable String uid) throws Exception {
+        return remotlyPartyService.findParty(uid);
+    }
+
+    @PostMapping("/move")
+    public GameResultDto addMove(@RequestBody MoveDto move) throws Exception {
+        return remotlyMoveService.saveMove(move);
     }
 }

@@ -2,7 +2,9 @@
   <div>Party: {{ gameStart$ | json }}</div>
   <div class="game-wrapper">
     <app-game-header></app-game-header>
-    <app-game-grid></app-game-grid>
+    <app-game-grid
+      [uidParty]="gameStart$?.partyUid!">
+    </app-game-grid>
   </div>
 }
 @else {

@@ -13,7 +13,7 @@ import { GameGridComponent } from "./components/game-grid/game-grid.component";
 @Component({
   selector: 'app-game-remote',
   standalone: true,
-  imports: [JsonPipe, AsyncPipe, CommonModule, HttpClientModule, LoadingComponent, GameHeaderComponent, GameGridComponent],
+  imports: [JsonPipe, CommonModule, HttpClientModule, LoadingComponent, GameHeaderComponent, GameGridComponent],
   providers: [WebSocketService, GameRemoteService],
   templateUrl: './game-remote.component.html',
   styleUrl: './game-remote.component.less'
