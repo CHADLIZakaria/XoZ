@@ -21,14 +21,21 @@ public class RemotlyPartyController {
     @GetMapping("/default/{uid}")
     public GameStartDto getDefaultParty(@PathVariable String uid) {
         PartyDto partyDto = remotlyPartyService.findDefaultParty(uid);
-        GameStartDto gameStartDto = new GameStartDto();
-        gameStartDto.setPartyUid(partyDto.uid());
-        gameStartDto.setPlayers(partyDto.players().stream().map(PlayerDto::name).toList());
-        return gameStartDto;
+        if(partyDto.players().size()==2) {
+            return new GameStartDto(partyDto.players().get(1).id(), partyDto.uid(), true);
+        }
+        else {
+            return new GameStartDto(partyDto.players().get(0).id(), partyDto.uid(), false);
+        }
     }
     @GetMapping("{uid}")
-    public PartyDto findParty(@PathVariable String uid) throws Exception {
+    public PartyDto findParty(@PathVariable String uid) {
         return remotlyPartyService.findParty(uid);
+    }
+
+    @GetMapping("{uid}/restart")
+    public PartyDto restartGame(@PathVariable String uid) throws Exception {
+        return remotlyPartyService.restartGame(uid);
     }
 
     @PostMapping("/move")

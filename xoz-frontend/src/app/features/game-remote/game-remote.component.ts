@@ -22,6 +22,7 @@ export class GameRemoteComponent implements OnInit, OnDestroy {
   private sub!: Subscription;
   private connectionSub!: Subscription;
   gameStart$: GameStart | null = null;
+  idPlayer!: number;
 
   constructor(
     private webSocketService: WebSocketService,
@@ -35,7 +36,7 @@ export class GameRemoteComponent implements OnInit, OnDestroy {
     this.sub = this.webSocketService.onParty().subscribe({
       next: (party) => {
         console.log('Party received (WS):', party);
-        this.gameStart$ = party;
+        this.gameStart$ = party;       
       },
       error: (err) => {
         console.error('Error receiving party data:', err);
@@ -49,6 +50,7 @@ export class GameRemoteComponent implements OnInit, OnDestroy {
           next: (party) => {
             console.log('Party fetched (HTTP):', party);
             this.gameStart$ = party;
+            this.idPlayer = party.idPlayer
           },
           error: (err) => {
             console.error('Error fetching current party:', err);

@@ -7,5 +7,5 @@ public interface GameService {
     GameDto saveGame(Game game);
     GameDto getGame(Long id);
     void updateWinner(Long id, Long idWinner) throws Exception;
-    void updateCurrentPlayer(Long id, Long idCurrentPlayer) throws Exception;
+    GameDto updateCurrentPlayer(Long id, Long idCurrentPlayer) throws Exception;
 }

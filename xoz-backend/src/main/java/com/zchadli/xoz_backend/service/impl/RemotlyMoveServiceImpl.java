@@ -1,16 +1,19 @@
 package com.zchadli.xoz_backend.service.impl;
 
 import com.zchadli.xoz_backend.constants.XoZConstants;
+import com.zchadli.xoz_backend.dao.GameDao;
 import com.zchadli.xoz_backend.dao.MoveDao;
 import com.zchadli.xoz_backend.dao.PartyDao;
 import com.zchadli.xoz_backend.dto.GameDto;
 import com.zchadli.xoz_backend.dto.GameResultDto;
 import com.zchadli.xoz_backend.dto.MoveDto;
 import com.zchadli.xoz_backend.mapper.XoZMapper;
+import com.zchadli.xoz_backend.model.Game;
 import com.zchadli.xoz_backend.model.Move;
 import com.zchadli.xoz_backend.service.GameService;
 import com.zchadli.xoz_backend.service.MoveService;
 import com.zchadli.xoz_backend.service.RemotlyMoveService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RemotlyMoveServiceImpl implements RemotlyMoveService {
     private final XoZMapper xoZMapper;
-    private final GameService gameService;
+    private final GameDao gameDao;
     private final MoveDao moveDao;
     private final PartyDao partyDao;
     private final MoveService moveService;
@@ -33,24 +36,29 @@ public class RemotlyMoveServiceImpl implements RemotlyMoveService {
     @Override
     public GameResultDto saveMove(MoveDto moveDto) throws Exception {
         Move move = xoZMapper.toMove(moveDto);
-        GameDto gameDto = gameService.getGame(move.getGame().getId());
-        if(gameDto.finished()) {
-            return null;
-        }
-        moveDao.save(move);
-        //Check Draw
-        if(moveDao.findByGameId(gameDto.id()).size()==9) {
-            gameService.updateWinner(gameDto.id(),null);
+        Game gameDto = gameDao.findById(move.getGame().getId()).orElseThrow();
+        if(gameDto.isFinished()) {
             return new GameResultDto(true, Collections.emptyList());
         }
-        gameService.updateCurrentPlayer(gameDto.id(), moveDto.id_next_player());
-        List<Move> movesPlayer = moveDao.findByGameIdAndPlayerId(move.getGame().getId(), move.getPlayer().getId());
+        gameDto.addMove(move);
+        //Check Draw
+        if(gameDto.getMoves().size()==9) {
+            gameDto.setFinished(true);
+            moveDao.save(move);
+            return new GameResultDto(true, Collections.emptyList());
+        }
+        gameDto.setIdCurrentPlayer(moveDto.id_next_player());
+        List<Move> movesPlayer =  gameDto.getMoves().stream().filter(movePlayer -> Objects.equals(movePlayer.getPlayer().getId(), moveDto.id_player())).toList();
         GameResultDto gameResultDto = getGameResult(movesPlayer);
         if(gameResultDto.finished() && !gameResultDto.movesWin().isEmpty()) {
-            gameService.updateWinner(gameDto.id(), gameResultDto.movesWin().get(0).id_player());
+            gameDto.setIdWinner(gameResultDto.movesWin().get(0).id_player());
+            gameDto.setFinished(true);
+            moveDao.save(move);
+            kafkaTemplate.send(XoZConstants.MOVE_TOPIC, xoZMapper.toMovesDto(gameDto.getMoves()));
         }
         else {
-            kafkaTemplate.send(XoZConstants.MOVE_TOPIC, gameDto.moves());
+            moveDao.save(move);
+            kafkaTemplate.send(XoZConstants.MOVE_TOPIC, xoZMapper.toMovesDto(gameDto.getMoves()));
         }
         return gameResultDto;
     }

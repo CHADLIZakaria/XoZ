@@ -33,6 +33,7 @@ export interface Party {
     history: Game[];
 }
 export interface GameStart {
-    players: string[];
+    idPlayer: number;
     partyUid: string;
+    started: boolean;
 }

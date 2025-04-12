@@ -25,6 +25,10 @@ export class GameRemoteService {
     return this.http.post<GameResult>(`${this.apiUrl}/move`, move)
   }
 
+  restartGame(uid: string) {
+    return this.http.get<Party>(`${this.apiUrl}${uid}/restart`)
+  }
+
 
 
 }

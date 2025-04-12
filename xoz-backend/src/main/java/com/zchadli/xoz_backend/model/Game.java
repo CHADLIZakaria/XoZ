@@ -17,7 +17,7 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Move> moves = new ArrayList<>();
     @Column(columnDefinition = "BOOLEAN DEFAULT false")
@@ -35,5 +35,11 @@ public class Game {
         if (obj == null || getClass() != obj.getClass()) return false;
         Game game = (Game) obj;
         return id != null && id.equals(game.getId());
+    }
+
+    public Move addMove(Move move) {
+        this.getMoves().add(move);
+        move.setGame(this);
+        return move;
     }
 }

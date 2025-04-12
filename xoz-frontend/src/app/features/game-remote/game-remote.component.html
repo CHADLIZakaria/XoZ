@@ -1,9 +1,10 @@
-@if(gameStart$?.players?.length == 2) {
-  <div>Party: {{ gameStart$ | json }}</div>
+@if(gameStart$?.started) {
   <div class="game-wrapper">
     <app-game-header></app-game-header>
     <app-game-grid
-      [uidParty]="gameStart$?.partyUid!">
+      [uidParty]="gameStart$?.partyUid!"
+      [idPlayer]="idPlayer"
+      >
     </app-game-grid>
   </div>
 }

@@ -1,6 +1,5 @@
 package com.zchadli.xoz_backend.service;
 
-import com.zchadli.xoz_backend.dto.GameResultDto;
 import com.zchadli.xoz_backend.dto.PartyDto;
 import com.zchadli.xoz_backend.model.Party;
 
@@ -9,4 +8,5 @@ public interface RemotlyPartyService {
     Party createParty() throws Exception;
     PartyDto findDefaultParty(String uid);
     PartyDto findParty(String uid);
+    PartyDto restartGame(String uid) throws Exception;;
 }

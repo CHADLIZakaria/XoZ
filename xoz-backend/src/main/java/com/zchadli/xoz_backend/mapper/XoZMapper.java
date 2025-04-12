@@ -18,6 +18,7 @@ public interface XoZMapper {
     XoZMapper xoZMapper = Mappers.getMapper(XoZMapper.class);
 
     GameDto toGameDto(Game game);
+    List<GameDto> toGamesDto(List<Game> game);
     Game toGame(GameDto gameDto);
 
     @Mapping(source = "position", target = "x", qualifiedByName = "getXPosition")
@@ -29,6 +30,8 @@ public interface XoZMapper {
     @Mapping(source = "game.id", target = "id_game")
     @Mapping(source =  "player.id", target = "id_player")
     MoveDto toMoveDto(Move move);
+
+    List<MoveDto> toMovesDto(List<Move> move);
 
     @Mapping(source = "party.id", target = "id")
     @Mapping(target = "currentGame", expression = "java(toCurrentGameDto(currentGame, gameResult))")

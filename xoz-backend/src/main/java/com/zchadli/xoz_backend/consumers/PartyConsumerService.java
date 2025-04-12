@@ -15,7 +15,7 @@ public class PartyConsumerService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     @KafkaListener(topics = XoZConstants.PARTY_TOPIC)
     public void consume(GameStartDto gameStartDto) {
-        log.info(gameStartDto.getPartyUid()+" start");
+        log.info(gameStartDto.partyUid()+" start");
         simpMessagingTemplate.convertAndSend("/topic/"+XoZConstants.PARTY_TOPIC, gameStartDto);
     }
 }

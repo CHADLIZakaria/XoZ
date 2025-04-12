@@ -8,7 +8,6 @@ import com.zchadli.xoz_backend.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
@@ -34,10 +33,10 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void updateCurrentPlayer(Long id, Long idCurrentPlayer) throws Exception {
+    public GameDto updateCurrentPlayer(Long id, Long idCurrentPlayer) throws Exception {
         Game game = gameDao.findById(id).orElseThrow(() -> new Exception("Not Found"));
         game.setIdCurrentPlayer(idCurrentPlayer);
-        gameDao.save(game);
+        return xoZMapper.toGameDto(gameDao.save(game));
     }
 
 }

@@ -24,7 +24,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class RemotlyPartyImpl implements RemotlyPartyService {
+public class RemotlyPartyServiceImpl implements RemotlyPartyService {
     private final PartyDao partyDao;
     private final PlayerDao playerDao;
     private final GameService gameService;
@@ -44,11 +44,11 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
             party.getPlayers().add(player);
             game.setIdCurrentPlayer(party.getPlayers().get(0).getId());
             GameDto gameDto = gameService.saveGame(game);
-            notifyGameStart(party);
+            notifyGameStart(player.getId(), party.getUid(), true);
             return xoZMapper.toPartyDto(party, gameDto, new GameResultDto(false, Collections.emptyList()));
         } else {
             Party party = createParty();
-            notifyGameStart(party);
+            notifyGameStart(party.getPlayers().get(0).getId(), party.getUid(), false);
             return xoZMapper.toPartyDto(party, null, new GameResultDto(false, Collections.emptyList()));
         }
     }
@@ -75,11 +75,26 @@ public class RemotlyPartyImpl implements RemotlyPartyService {
         return xoZMapper.toPartyDto(party, gameDto, gameResultDto);
     }
 
-    public void notifyGameStart(Party party) {
-        List<String> playerNames = party.getPlayers().stream()
-                .map(Player::getName)
-                .toList();
-        GameStartDto gameStartDto = new GameStartDto(playerNames, party.getUid());
+    @Override
+    public PartyDto restartGame(String uid) throws Exception {
+        Party party = partyDao.findByUid(uid).orElseThrow(() -> new Exception("Not found"));
+        Game currentGame = party.getGames().stream().filter(Game::isCurrent).findFirst().orElseThrow(() -> new Exception("Not found"));
+        currentGame.setCurrent(false);
+        // Set new game to Party
+        Game game = new Game();
+        List<Player> players = playerDao.findAll();
+        party.setPlayers(players);
+        game.setParty(party);
+        game.setCurrent(true);
+        game.setIdCurrentPlayer(players.get(0).getId());
+        // Save new Game
+        GameDto gameSaved = gameService.saveGame(game);
+        GameResultDto gameResultDto = new GameResultDto(false, new ArrayList<>());
+        return xoZMapper.toPartyDto(party, gameSaved, gameResultDto);
+    }
+
+    public void notifyGameStart(Long idPlayer, String partyUid, boolean started) {
+        GameStartDto gameStartDto = new GameStartDto(idPlayer, partyUid, started);
         kafkaTemplate.send(XoZConstants.PARTY_TOPIC, gameStartDto);
     }
 }
