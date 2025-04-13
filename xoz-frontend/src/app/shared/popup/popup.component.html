@@ -1,11 +1,10 @@
 @if(isOpen()) {
     <div class="position-absolute w-100 h-100 top-0" @modalClose>
         <div class="modal-overlay position-absolute bg-secondary w-100 h-100 top-0 bg-opacity-75"></div>
-        <div class="w-50 bg-white position-absolute top-50 start-50 translate-middle popup-container d-flex flex-row align-items-center px-2 py-3 text-center modal-content" >
-            <img src="/assets/images/trophee.png" class="rounded mx-auto d-block" alt="trophee" />
-            <div class="d-flex flex-column flex-grow-1 flex-shrink-0 flex-basis-0 gap-3 justify-content-center align-items-center">
-                <span class="fs-3">We Have A Winner</span>
-                <span class="fs-3 fw-bold mb-3">Player 2</span>
+        <div class="w-75 bg-white position-absolute top-50 start-50 translate-middle popup-container d-flex flex-row align-items-center px-2 py-3 text-center modal-content" >
+            <img [src]="icon()" class="rounded mx-auto d-block" alt="trophee" />
+            <div class="d-flex flex-column gap-3 justify-content-center align-items-center w-100">
+                <span class="fs-3 fw-bold">{{message()}}</span>
                 <app-button
                     text="Restart"
                     icon="/assets/images/restart.png"

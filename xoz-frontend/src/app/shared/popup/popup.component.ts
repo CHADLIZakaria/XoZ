@@ -39,8 +39,10 @@ import { animate, group, query, style, transition, trigger } from '@angular/anim
 })
 export class PopupComponent {
   close = output<void>();
-  isOpen = input.required<boolean>(); 
-  restart = output<void>(); 
+  isOpen = input.required<boolean>();
+  message = input<string>();
+  restart = output<void>();
+  icon = input<string>();
   
   onClose() {
     this.close.emit()

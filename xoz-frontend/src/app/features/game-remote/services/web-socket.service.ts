@@ -9,6 +9,7 @@ export class WebSocketService {
   private stompClient!: Client;
   private messageSubject = new Subject<GameStart>();
   private movesSubject = new Subject<Move[]>();
+  private gameResultSubject = new Subject<GameResult>();
   
   private connectionStatus$ = new BehaviorSubject<boolean>(false);
   private isConnected = false;
@@ -31,7 +32,8 @@ export class WebSocketService {
 
         if (!this.isSubscribed) {
           this.subscribeToPartyTopic();
-          this.subscribeToMoveTopic()
+          this.subscribeToMoveTopic();
+          this.subscribeToGameTopic();
         }
       },
 
@@ -74,12 +76,28 @@ export class WebSocketService {
     });
   }
 
+  private subscribeToGameTopic(): void {
+    this.stompClient.subscribe('/topic/game-topic', (message: IMessage) => {
+      console.log('Received message:', message.body);
+      try {
+        const gameResult: GameResult = JSON.parse(message.body);
+        this.gameResultSubject.next(gameResult);
+      } catch (error) {
+        console.error('Error parsing message:', error);
+      }
+    });
+  }
+
   onParty(): Observable<GameStart> {
     return this.messageSubject.asObservable();
   }
 
   onMoves(): Observable<Move[]> {
     return this.movesSubject.asObservable();
+  }
+
+  onGame(): Observable<GameResult> {
+    return this.gameResultSubject.asObservable();
   }
 
   getConnectionStatus(): Observable<boolean> {
