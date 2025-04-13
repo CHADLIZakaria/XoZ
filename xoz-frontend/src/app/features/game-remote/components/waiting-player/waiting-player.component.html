@@ -1,0 +1,8 @@
+<div class="player-waiting">
+    <p class="fs-4">Waiting Move</p>
+    <div class="animation">
+      @for(image of images; track idx; let idx = $index) {
+        <img [@repeatAnimation]="animationStates[idx]" [src]="'/assets/images/waiting-player/'+image+'.png'" [alt]="image" />
+      }
+    </div>
+  </div>

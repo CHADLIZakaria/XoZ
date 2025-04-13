@@ -1,0 +1,32 @@
+<div class="w-50 m-auto stats row gap-3 py-3">
+    <div class="stat bg-white px-3 col text-center d-flex flex-column">
+      <span class="fs-4 fw-bold">
+        Player 1
+      </span>
+      <span class="fs-4 fw-bold">0
+        @if(showAnimation==='player1') {
+          <span class="text-success fw-semibold fst-italic" [@fadeIn]="showAnimation ? 'visible' : 'hidden'" (@fadeIn.done)="showAnimation = 'hidden'">+1</span>
+        }
+      </span>
+    </div>
+    <div class="stat bg-white px-3 col text-center d-flex flex-column">
+      <span class="fs-4 fw-bold">
+        Draw
+      </span>
+      <span class="fs-4 fw-bold">0
+        @if(showAnimation==='draw') {
+          <span class="text-success fw-semibold fst-italic" [@fadeIn]="showAnimation ? 'visible' : 'hidden'" (@fadeIn.done)="showAnimation = 'hidden'">+1</span>
+        }
+      </span>
+    </div>
+    <div class="stat bg-white px-3 col text-center d-flex flex-column">
+      <span class="fs-4 fw-bold">
+        Player 2
+      </span>
+      <span class="fs-4 fw-bold">0
+        @if(showAnimation==='player2') {
+          <span class="text-success fw-semibold fst-italic" [@fadeIn]="showAnimation ? 'visible' : 'hidden'" (@fadeIn.done)="showAnimation = 'hidden'">+1</span>
+        }
+      </span>
+    </div>
+</div>
